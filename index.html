@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04120e">
+<title>طه AI — تحويل النص إلى فيديو</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--green:#16e889;--mint:#8fffd0;--panel:rgba(2,18,15,.78);--line:rgba(31,238,148,.55)}
+*{box-sizing:border-box} body{margin:0;background:#020b09;color:#f4fff9;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,12,9,.48) 38%,#020b09 94%),url("assets/background.jpg") center 24%/cover no-repeat;z-index:-2}
+body:after{content:"";position:fixed;inset:0;background:rgba(0,12,9,.18);backdrop-filter:blur(1px);z-index:-1}
+.app{max-width:540px;margin:auto;padding:18px 16px 30px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 4px}
+.brand{font-weight:900;font-size:31px;color:var(--green);line-height:1}.brand small{display:block;color:#fff;font-size:12px;letter-spacing:4px;margin-top:7px}
+.badge{border:1px solid var(--line);background:rgba(0,0,0,.45);border-radius:30px;padding:8px 12px;color:var(--mint);font-size:12px}
+.hero{padding:150px 4px 20px;text-shadow:0 2px 16px #000}
+h1{font-size:clamp(29px,8vw,42px);margin:0 0 8px;font-weight:900}h1 span{color:var(--green)}.sub{font-size:16px;margin:0;color:#e3fff1}
+.card{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(15px);border-radius:23px;padding:17px;margin:12px 0;box-shadow:0 12px 35px #0005}
+label{display:block;color:#d9ffec;font-weight:700;margin-bottom:10px}
+textarea{width:100%;min-height:115px;resize:vertical;border:0;outline:0;background:transparent;color:#fff;font:inherit;font-size:16px;line-height:1.7}textarea::placeholder{color:#b6d3c6}
+.row{display:flex;gap:10px;align-items:stretch;margin-top:12px}.btn{border:0;border-radius:18px;padding:15px 14px;font:inherit;font-weight:800;cursor:pointer}.primary{flex:1;background:linear-gradient(120deg,#18e78b,#48ffad);color:#002a18}.secondary{background:rgba(0,0,0,.35);color:#dfffee;border:1px solid #167c55}
+.note{font-size:12px;color:#c2d8ce;line-height:1.7;margin:12px 2px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.tile{border:1px solid #ffffff25;background:rgba(0,0,0,.55);border-radius:17px;padding:15px 10px;text-align:center;color:#e9fff3}.tile b{display:block;color:var(--green);font-size:15px;margin-bottom:5px}
+.status{display:none;margin-top:14px;padding:13px;border-radius:14px;background:#071c14;border:1px solid #267b54;line-height:1.7;font-size:14px}
+footer{text-align:center;color:#9bb8aa;font-size:12px;padding:22px 8px}
+a{color:var(--mint)}
+@media(min-height:800px){.hero{padding-top:190px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="brand">طه AI<small>TAHA AI</small></div>
+    <div class="badge">✦ مساعد صناعة الفيديو</div>
+  </header>
+  <section class="hero">
+    <h1>مرحبًا بك في <span>طه AI</span></h1>
+    <p class="sub">حوّل فكرتك من كلمات إلى مشهد فيديو 🎬</p>
+  </section>
+  <section class="card">
+    <label for="prompt">✍️ اكتب وصف الفيديو هنا</label>
+    <textarea id="prompt" placeholder="مثال: أسد يمشي ببطء في الصحراء وقت الغروب، تصوير سينمائي واقعي..."></textarea>
+    <div class="row">
+      <button class="btn secondary" id="clear">مسح النص</button>
+      <button class="btn primary" id="generate">▶ إنشاء الفيديو</button>
+    </div>
+    <p class="note">هذه نسخة أولية من واجهة طه AI. زر الإنشاء يتحقق من وصفك ويجهّز الطلب، لكنه لا يولّد فيديو حقيقيًا بعد؛ يلزم ربطه بنموذج فيديو متاح أو تثبيت نموذج محلي متوافق.</p>
+    <div class="status" id="status" role="status"></div>
+  </section>
+  <section class="grid">
+    <div class="tile"><b>✦ أفكار إبداعية</b>اكتب وصفًا أقوى لمشهدك</div>
+    <div class="tile"><b>▣ إعدادات الفيديو</b>إعدادات النموذج ستضاف لاحقًا</div>
+    <div class="tile"><b>◷ سجل الفيديوهات</b>ميزة قيد التطوير</div>
+    <div class="tile"><b>♡ مجاني</b>مصمم ليعمل دون اشتراك واجهة</div>
+  </section>
+  <footer>طه AI · نسخة تجريبية أولية · لا تتطلب تسجيل دخول</footer>
+</main>
+<script>
+const promptEl=document.getElementById('prompt'), statusEl=document.getElementById('status');
+document.getElementById('clear').addEventListener('click',()=>{promptEl.value='';statusEl.style.display='none';promptEl.focus()});
+document.getElementById('generate').addEventListener('click',()=>{
+ const p=promptEl.value.trim(); statusEl.style.display='block';
+ if(!p){statusEl.textContent='اكتب وصف الفيديو أولًا، ثم اضغط «إنشاء الفيديو».';promptEl.focus();return}
+ statusEl.textContent='تم تجهيز وصف الفيديو بنجاح. هذه النسخة لا تتصل حتى الآن بمحرك توليد فيديو؛ لتوليد فيديو حقيقي نحتاج إلى دمج نموذج متوافق. تم الاحتفاظ بالنص داخل الصفحة فقط.';
+});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body></html>
